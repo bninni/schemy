@@ -1,0 +1,46 @@
+{
+  "name": "schemy",
+  "version": "0.0.1",
+  "description": "A module to apply a schema to a value or automatically apply the schema to the arguments of a function",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "dependencies": {
+    "vows": "^0.8.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "vows test/test.js --spec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bninni/schemy.git"
+  },
+  "keywords": [
+    "apply",
+    "schema",
+    "to",
+    "function",
+    "input",
+    "schema",
+    "function",
+    "parameter",
+    "schema",
+    "function",
+    "argument",
+    "schema",
+    "function",
+    "arguments",
+    "schema",
+    "function",
+    "parameters",
+    "schema"
+  ],
+  "author": "Brian Ninni <brian@ninni.io> (http://ninni.io)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bninni/schemy/issues"
+  },
+  "homepage": "https://github.com/bninni/schemy#readme"
+}
