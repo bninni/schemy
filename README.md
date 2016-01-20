@@ -1,4 +1,4 @@
-schemy
+#schemy
 
 A `Schema` is defined as one of the following:
 * `Type`
