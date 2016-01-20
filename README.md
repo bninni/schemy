@@ -2,16 +2,16 @@
 
 A module to apply a schema to a value or automatically apply the schema to the arguments of a function
 
+---
+
 A `Schema` is defined as one of the following:
 * `Type`
   * `Constructor` (`String`, `Object`, etc)
   * `null`
   * `undefined`
-* **Schema Object Definition** [(see here for more details)](#schema_object_definition)
+* A "**Schema Object Definition**" [(see here for more details)](#schema_object_definition)
 * Name of saved Schema
-  * `String`
 * An `Array` of any of the above
-  * A given value can match any `Schema` in the array
 
 ## Install
 ```
@@ -33,7 +33,7 @@ var Schemy = require('schemy')
 
 **exists( value )**
 
-_To see if the given value exists (i.e. is not `null` or `undefined`)
+_To see if the given value exists (i.e. is not `null` or `undefined`)_
 
   * `value` **(Any)** - The value to check the existance of
   
@@ -70,10 +70,9 @@ _To see if the given value is of the given type(s)_
   * `value` **(Any)** - The value to check the type of
   * `type` **(Type)** - The type to compare against
     * _An array of types will check if value matches any items in the array_
-	* _A nested array will check if value does **_NOT_** match any items in that array_
+    * _A nested array will check if value does **NOT** match any items in that array_
 
 _An empty array represents the full set of existing types_
-	
 ```javascript
 Schemy.is(0,Number)          //true
 Schemy.is(0,String)          //false
@@ -98,7 +97,7 @@ Schemy.is(0)         //false
 Schemy.is()          //false
 Schemy.is(undefined) //false
 
-//will return false if the second argument is not a constructor (or null/undefined)
+//will return false if the second argument is not a type
 Schemy.is(0,0)       //false
 Schemy.is('hi','hi') //false
 ```
@@ -157,7 +156,7 @@ Schemy.argArray({
 })                       //['zero','one']
 ```
 
-If it is a `Function`, it will return a new function which automatically passes the arguments as an array into the given function
+If input is a `Function`, it will return a new function which automatically passes the arguments as an array into the given function
 
 ```javascript
 function go( arr ){
@@ -183,14 +182,10 @@ function divide(num,den){
   return num/den;
 }
 
-Schemy.map(
-  {
+Schemy.map({
     num : 4,
     den : 10
-  },
-  divide);
-  
-> 0.4
+  }, divide);      //0.4
 ```
 
 ---
@@ -214,38 +209,28 @@ Schemy.match(0,String)          //false
 Schemy.match(0,[Number,String]) //true
 
 //can use the Schema object
-Schemy.match(0,{
-  type : String
-})                              //false
-Schemy.match(0,{
-  type : Number
-})                              //true
+Schemy.match(0,{ type : String }) //false
+Schemy.match(0,{ type : Number }) //true
 
 //Type array can also contain Schema Objects
-Schemy.match(0,[
-  {
-    type : Number,
-    valid : greaterThanZero
-  },
-  {
-    type : [String,Boolean]
-  }
-])                              //false 
-Schemy.match(false,[
-  {
-    type : Number,
-    valid : greaterThanZero
-  },
-  {
-    type : [String,Boolean]
-  }
-])                              //true
+Schemy.match(0,[{
+  type : Number,
+  valid : greaterThanZero
+},{
+  type : [String,Boolean]
+}])                              //false
+
+Schemy.match(false,[{
+  type : Number,
+  valid : greaterThanZero
+},{
+  type : [String,Boolean]
+}])                              //true
 ```
 
 Using `only` or `not`:  
   
 ```javascript
-//using only and not
 Schemy.match(0,{
   type : Number,
   only : [1,2,3]
@@ -270,11 +255,10 @@ Schemy.match(2,{
 The `valid` function will only be run if the value matches the given type(s)
   * Input argument is an Object with two properties:
     * `value` - The value the schema is checking against
-	  * _This value **_CAN_** be manipulated_
+      * _This value **CAN** be manipulated_
     * `valid` - Whether or not the value should match the schema
-	  * _Default:_ `true`
-	  * _Settings this to `false` will cause the value to not match the schema_
-	  
+      * _Default:_ `true`
+      * _Settings this to `false` will cause the value to not match the schema_
 ```javascript
 function greaterThanZero( data ){
   data.valid = data.value > 0;
@@ -316,11 +300,11 @@ The relevant **Schema Object Definition** attributes are the following:
     * If `type` is an array, creates a new instance of the first Constructor in the array  
   * `cast` **(Boolean)** - If the replacement value should be the given value cast as the given type
     * _Default:_ `true`
-	* If `type` is an array, creates a new instance of the first Constructor in the array  
+    * If `type` is an array, creates a new instance of the first Constructor in the array  
   * `required` **(Boolean)** - If the given value is required to match the given Schema 
     * _Default:_ `true`
-	* It will not complete the function if there is no valid input
-  * `priority` - The order to check `generate`, `new`, `cast`, or `default` when creating a replacement
+    * It will not complete the function if there is no valid input
+  * `priority` **(Array)** - The order to check `generate`, `new`, `cast`, or `default` when creating a replacement
     * _Default:_ ['generate','default','new','cast']
   
 Using cast:  
@@ -336,12 +320,12 @@ Using default:
 
 ```javascript
 Schemy.apply(1,{
-	type : Number,
-	default : 10
+  type : Number,
+  default : 10
 })                                //1
 Schemy.apply('1',{
-	type : Number,
-	default : 10
+  type : Number,
+  default : 10
 })                                //10
 ```
 
@@ -349,20 +333,20 @@ Using generate:
 
 ```javascript
 Schemy.apply('1',{
-	type : Object,
-	generate : function( val ){
-		return {
-			prev : val
-		}
-	}
+  type : Object,
+  generate : function( val ){
+    return {
+      prev : val
+    }
+  }
 })                                //{ prev : '1' }
 Schemy.apply({},{
-	type : Object,
-	generate : function( val ){
-		return {
-			prev : val
-		}
-	}
+  type : Object,
+  generate : function( val ){
+    return {
+      prev : val
+    }
+  }
 })                                //{}
 ```
 
@@ -370,12 +354,12 @@ Using new:
 
 ```javascript
 Schemy.apply('120',{
-	type : String,
-	new : true
+  type : String,
+  new : true
 })                                //'120'
 Schemy.apply(120,{
-	type : String,
-	new : true
+  type : String,
+  new : true
 })                                //''
 ```
 
@@ -414,39 +398,38 @@ _To save a validation function to be used as a property in Schemas_
   * `func` **(Function)** - The validation function itself
   * `setting` **(Any)** - The default setting value for this property
   
-A saved `valid`ation function input argument has one additional property:
-    * `setting` - The value that was associated with this property in the schema
+A saved validation function input argument has one additional property:
+  * `setting` - The value that was associated with this property in the schema
   
 
 ```javascript
 //using a saved 'validation' function
 Schemy.validation(Number,'greaterThanZero',
-	function( data ){
-		if( !data.setting ) return true;
-		data.valid = data.value > 0; 
-	},
-	false);
-	
+  function( data ){
+    if( !data.setting ) return true;
+    data.valid = data.value > 0; 
+  },
+  false);
+
 Schemy.match(0,{
-	type : Number,
+  type : Number,
 })                              //true
 
 Schemy.match(0,{
-	type : Number,
-	greaterThanZero : true
+  type : Number,
+  greaterThanZero : true
 })                              //false
 
 Schemy.match(10,{
-	type : Number,
-	greaterThanZero : true
+  type : Number,
+  greaterThanZero : true
 })                              //true
 ```
-
-
----------
-  
-A **Schema Object Definition** can have any of the following properties:
+---
 <a name='schema_object_definition'></a>
+## Schema Object Definition
+
+A **Schema Object Definition** can have any of the following properties:
   * `type` **(Type)** _[required]_ - The type(s) to check the value of
   * `valid` **(Function)** - Function to determine if the given value is valid or not
   * `only` **(Array)** - Array of the values that are allowed
@@ -459,12 +442,15 @@ A **Schema Object Definition** can have any of the following properties:
     * If `type` is an array, creates a new instance of the first Constructor in the array  
   * `cast` **(Boolean)** - If the replacement value should be the given value cast as the given type
     * _Default:_ `true`
-	* If `type` is an array, creates a new instance of the first Constructor in the array  
+    * If `type` is an array, creates a new instance of the first Constructor in the array  
   * `required` **(Boolean)** - If the given value is required to match the given Schema 
     * _Default:_ `true`
-	* It will not complete the function if there is no valid input
-  * `priority` - The order to check `generate`, `new`, `cast`, or `default` when creating a replacement
+    * It will not complete the function if there is no valid input
+  * `priority` **(Array)** - The order to check `generate`, `new`, `cast`, or `default` when creating a replacement
     * _Default:_ ['generate','default','new','cast']
   
-The order of which `generate`, `new`, `cast`, or `default` is called depends on the `priority` array.
-  
+---
+
+## License
+
+### MIT
