@@ -1,4 +1,4 @@
-var Schemy = require('../schemy'),
+var Schemy = require('../index'),
 	vows = require('vows'),
 	assert = require('assert');
 	
