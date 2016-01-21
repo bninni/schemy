@@ -1,7 +1,7 @@
 {
   "name": "schemy",
   "version": "0.0.1",
-  "description": "A module to apply a schema to a value or automatically apply the schema to the arguments of a function",
+  "description": "A module to compare a value to a type or schema.  It can get the type of a value, apply a schema to a value or automatically apply a schema to all arguments of a function.",
   "main": "index.js",
   "directories": {
     "test": "tests"
