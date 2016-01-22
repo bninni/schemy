@@ -16,7 +16,7 @@ It can get the type of a value, apply a schema to a value or automatically apply
     * [is](#is) - To see if the given value is one of the given _types_
   4. [Using a _Schema_](#Using_a_Schema)
     * [match](#match) - To check if the given value matches the given _schema_
-	* [apply](#apply) - To apply a _schema_ to a value
+    * [apply](#apply) - To apply a _schema_ to a value
   5. [Type Specific Properties](#Type_Specific_Properties)
     * [Object](#Object_Properties)
     * [Array](#Array_Properties)
@@ -28,7 +28,7 @@ It can get the type of a value, apply a schema to a value or automatically apply
   7. [Applying to Function Arguments](#Function_Arguments)
   8. [Templates](#Templates)
     * [Saving a Schema](#Saving_a_Schema)
-	* [Saving a Validation Function](#Saving_a_Validation_Function)
+    * [Saving a Validation Function](#Saving_a_Validation_Function)
   9. [Settings](#Settings)
   10. [Reference](#Reference)
     * [Schema](#Schema)
@@ -57,10 +57,10 @@ Some quick definitions before you read further:
 
   * **Type** - The _Type_ of a value is it's `Class` (technically, a `Function`)
     * If the value is `null` or `undefined`, then the _type_ will be `null` or `undefined`, respectively
-	
+
   * **Schema** - A _Schema_ is a model to define the _type_ and other attributes a value should have
     * A _Schema_ can be represented as _Type_ or as an `Object` with certain attributes
-	* [See here for all attributes a _Schema Object_ can have](#Schema)
+    * [See here for all attributes a _Schema Object_ can have](#Schema)
 
 <a name='Basics'></a>
 ## Basics
@@ -186,20 +186,20 @@ stringSchema = { type : String }
 Schemy.match(0, [numberSchema,stringSchema])    //true
 Schemy.match(true, [numberSchema,stringSchema]) //false
 
-Schemy.match(0, {
-  type : [numberSchema,stringSchema]            //true
-})
-Schemy.match(true, {
-  type : [numberSchema,stringSchema]            //false
-})
+obj = {
+  type : [numberSchema,stringSchema]
+}
+
+Schemy.match(0, obj)                            //true
+Schemy.match(true, obj)                         //false
 ```
 
 You can use `only` to create a list of possible matches
   
 ```javascript
 mySchema = {
-	type : Number,
-	only : [1,2,3]
+  type : Number,
+  only : [1,2,3]
 }
 
 Schemy.match(true,mySchema) //false
@@ -211,8 +211,8 @@ Or you can use `not` to create a list of failing matches
   
 ```javascript
 mySchema = {
-	type : Number,
-	not : [1,2,3]
+  type : Number,
+  not : [1,2,3]
 }
 
 Schemy.match(true,mySchema) //false
@@ -239,8 +239,8 @@ function greaterThanZero( data ){
 }
 
 mySchema = {
-	type : Number,
-	before : greaterThanZero
+  type : Number,
+  before : greaterThanZero
 }
 
 Schemy.match('hi',mySchema) //false
@@ -251,17 +251,17 @@ Schemy.match(5,mySchema)    //true
 
 The `after` function has the same functionality as the `before` function, it is simply run after all other validations.
 
-**Notes:** - `after` will not be called if another validation function rejects the value
+**Note:** `after` will not be called if another validation function rejects the value
 
 ```javascript
 function increment( data ){
-	data.value++;
+  data.value++;
 }
 
 mySchema = {
-	type : Number,
-	before : increment,
-	after : greaterThanZero,
+  type : Number,
+  before : increment,
+  after : greaterThanZero,
 }
 
 Schemy.match('hi',mySchema) //false
@@ -276,18 +276,18 @@ Here's a demonstration the order of validation:
 
 ```javascript
 mySchema = {
-	type : Number,
-	before : increment,
-	only : [1,2,3]
+  type : Number,
+  before : increment,
+  only : [1,2,3]
 }
 
 Schemy.match(0,mySchema)    //true
 Schemy.match(3,mySchema)    //false
 
 mySchema = {
-	type : Number,
-	only : [1,2,3],
-	after : increment
+  type : Number,
+  only : [1,2,3],
+  after : increment
 }
 
 Schemy.match(0,mySchema)    //false
@@ -311,19 +311,19 @@ The replacement value is determined by additional _Schema Object_ properties:
   
   * `generate` - **(Function)** - Function to create the replacement value
     * The input argument is the `value`
-	
+
   * `new`      - **(Boolean)**  - If the replacement value should be a new instance of the `type`
     * _Default:_ `false`
     * If `type` is an array, creates a new instance of the first `Class` it finds 
-	
+
   * `cast`     - **(Boolean)**  - If the replacement value should be the value cast as the `type`
     * _Default:_ `true`
     * If `type` is an array, creates a new instance of the first `Class` it finds 
-	
+
   * `required` **(Boolean)** - If the value is required to match the _schema_
     * _Default:_ `true`
     * It will not complete the function if there is no valid input
-	
+
   * `error` **(Boolean)** - If an error should be thrown when a value fails to match a `required` _schema_
     * _Default:_ `true`
 
@@ -331,7 +331,7 @@ The replacement value is determined by additional _Schema Object_ properties:
     * _Default:_ `['generate','default','new','cast']`
 
 **Note:** All _default_ values can be changed by [Modifying the Settings](#settings)
-	
+
 
 Here is an example using the default settings
   *  This uses `cast` to create the replacement value
@@ -355,8 +355,8 @@ Since `default` has a higher `priority` than `cast` (by _default_), the `default
 
 ```javascript
 mySchema = {
-	type : Number,
-	default : 10
+  type : Number,
+  default : 10
 }
 
 Schemy.apply(1,mySchema)   //1
@@ -367,9 +367,9 @@ If you were to change the `priority`, then it will use whichever appears first i
 
 ```javascript
 mySchema = {
-	type : Number,
-	default : 10,
-	priority : ['cast','generate','default','new']
+  type : Number,
+  default : 10,
+  priority : ['cast','generate','default','new']
 }
 
 //cast appears before default, so it will cast
@@ -381,10 +381,10 @@ You can also set `cast` to `false` to ignore it when checking `priority`
 
 ```javascript
 mySchema = {
-	type : Number,
-	default : 10,
-	cast : false,
-	priority : ['cast','generate','default','new']
+  type : Number,
+  default : 10,
+  cast : false,
+  priority : ['cast','generate','default','new']
 }
 
 Schemy.apply(1,mySchema)   //1
@@ -395,15 +395,15 @@ You can also `generate` the replacement value.
 
 The input argument is the value that is being checked
 
-**Note:** The input argument might be different from the original value if it was modified in a validation function (like `before` or `after)
+**Note:** The input argument might be different from the original value if it was modified in a validation function (like `before` or `after`)
 
 ```javascript
 mySchema = {
-	type : Number,
-	generate : function( val ){
-		if( Schemy.is( val, String ) ) return 1;
-		else return 0;
-	}
+  type : Number,
+  generate : function( val ){
+    if( Schemy.is( val, String ) ) return 1;
+    else return 0;
+  }
 }
 
 Schemy.apply(5,mySchema )   //5
@@ -416,16 +416,16 @@ Instead of `cast`ing, you can decide to create a `new` instance instead
 ```javascript
 //using cast:
 mySchema = {
-	type : Array,
-	cast : true
+  type : Array,
+  cast : true
 }
 
 Schemy.apply(5,mySchema) //[5]
 
 //using new
 mySchema = {
-	type : Array,
-	new : true
+  type : Array,
+  new : true
 }
 Schemy.apply(5,mySchema) //[]
 ```
@@ -436,8 +436,8 @@ It will return `undefined` if there is no replacement value.
 
 ```javascript
 mySchema = {
-	type : Array,
-	strict : true
+  type : Array,
+  strict : true
 }
 
 Schemy.apply([],mySchema) //[]
@@ -445,14 +445,15 @@ Schemy.apply(5,mySchema)  //undefined
 ```
 
 If not replacement is found **and** `required` is `true`, it will throw an error
+
 **Note:** If `error` is set to false, it will simply log the `error` to the `debug` function and still return `undefined`
   * The `debug` function can be set by [Modifying the Settings](#settings)
 
 ```javascript
 mySchema = {
-	type : Array,
-	strict : true,
-	required : true
+  type : Array,
+  strict : true,
+  required : true
 }
 
 Schemy.apply([],mySchema) //[]
@@ -467,18 +468,18 @@ Here is a more complex example
 
 ```javascript
 function abs( data ){
-	data.value = Math.abs(data.value);
+  data.value = Math.abs(data.value);
 }
 
 function double( data ){
-	data.value *= 2;
+  data.value *= 2;
 }
 
 mySchema = {
-	type : Number,
-	before : abs,
-	after : double,
-	default : 50
+  type : Number,
+  before : abs,
+  after : double,
+  default : 50
 }
 
 Schemy.apply(0,mySchema)     //0
@@ -499,7 +500,7 @@ Some _types_ come with additional properties to help you further narrow down you
 An `Object` _Schema_ has five additional properties to provide further validation
   * `specific`        - **({Schema})**  - An object with _schemas_ mapped to each specific key
   * `every`           - **(Schema)**    - A _schema_ to be applied to every key
-  * `settings`        - **(Object)**    - _Schema_ settings to applied to the `every` _schema_ or every _schema_ in `specific`
+  * `settings`        - **(Object)**    - _Schema_ settings to apply to the `every` _schema_ or every _schema_ in `specific`
   * `removeUndefined` - **(Boolean)**   - If it should remove undefined properties
     * _Default:_ `false`
   * `removeExtra`     - **(Boolean)**   - If it should remove properties not defined in the `specific` object
@@ -511,9 +512,9 @@ Here is a basic example using `every`
 
 ```javascript
 mySchema = {
-	type : Object,
-	every : String,
-	new : true
+  type : Object,
+  every : String,
+  new : true
 }
 
 Schemy.apply(null, mySchema)        //{}
@@ -534,22 +535,22 @@ Now lets look at `specific`
 
 ```javascript
 numSchema = {
-	type : Number,
-	default : 25
+  type : Number,
+  default : 25
 }
 
 strSchema = {
-	type : String,
-	default : 'Fred'
+  type : String,
+  default : 'Fred'
 }
 
 objSchema = {
-	type : Object,
-	new : true,
-	specific : {
-		name : strSchema,
-		age : numSchema
-	}
+  type : Object,
+  new : true,
+  specific : {
+    name : strSchema,
+    age : numSchema
+  }
 }
 
 Schemy.apply(null, objSchema) //{ name : 'Fred', age : 25 }
@@ -569,7 +570,7 @@ Schemy.apply(obj, objSchema) //{ name : 'George', age : 25 }
 
 Now lets look at `removeExtra` and its purpose, continuing the above example
 
-**Note:** - Any extra properties that don't have a `specific` _schema_ are still subject to the `every` _schema_ if it exists
+**Note:** Any extra properties that don't have a `specific` _schema_ are still subject to the `every` _schema_ if it exists
 
 ```javascript
 obj = {
@@ -701,7 +702,7 @@ go( 1, 2, 3 ) //[1,2,3]
 
 _To always return a new instance of the function even if `new` isn't called_
 
-  * `func` **(Function)** - The function to always create a new instance of
+  * `func` - **(Function)** - The function to always create a new instance of
 
 ```javascript
 function myClass(name,age){
@@ -758,6 +759,7 @@ Perhaps the most useful feature of Schemy is its ability to automatically apply 
 This eliminates the need for you to waste your time type checking, casting, and assigning default values and lets you focus on the code itself
 
 As with the previous function helpers, a `wrap`ped function will still work when calling with the `new` operator or when applying to a `prototype` function.
+
 ---
 
 **wrap( args, func[, props] )**
@@ -775,25 +777,25 @@ The `props` object can contain any [_Schema_ Object](#Schema) properties
 The `props` object can also contain additional properties to define how the `func` is wrapped:
   * `ordered` - **(Boolean)** - If the arguments need to be given in the correct order
       * _Default:_ `true`
-	  * If false, it will automatically determine the order based on the _type_
+      * If false, it will automatically determine the order based on the _type_
   * `class` - **(Boolean)** - If `func` is a class or not
       * _Default:_ `false`
-	  * If true, it will always return a new `func`, regardless of if `new` is used or not
+      * If true, it will always return a new `func`, regardless of if `new` is used or not
   * `array` - **(Boolean)** - If the arguments should be combined into an array before applying a _schema_ and passing to `func`
       * _Default:_ `false`
   * `object` - **(Boolean)** - If the arguments get sent to `func`
       * _Default:_ `false`
 
-	  
+
 A _Schema_ defined in the `args` can contain one additional property that isn't used elsewhere:
   * `names` **([Strings])** - Array of String, Alternative names for the variable
     * Only used when `object` is `true`
-	
-	
+
+
 But before we dig into these properties, look start with simple examples using the default settings:
 
 **Note:** Remember, this will be using `cast` to replace invalid values
-	  
+
 ```javascript
 function f( val ){
   return val;
@@ -844,13 +846,13 @@ Individual _schemas_ can still override properties defined in the `props` object
 
 ```javascript
 function f( a, b ){
-	return a + b;
+  return a + b;
 }
 
 //this will use 'cast' instead of 'new'
 mySchema = {
-	type : Number,
-	new : false
+  type : Number,
+  new : false
 }
 
 //each element in the array directly maps to each argument in the function
@@ -906,23 +908,23 @@ Take a look a more intricate example:
 
 ```javascript
 function f(neg,pos){
-	return [neg,pos];
+  return [neg,pos];
 }
 
 posSchema = {
-	type : Number,
-	before : function( data ){
-		if( data.value <= 0 ) data.reject()
-	}
-	default : 1
+  type : Number,
+  before : function( data ){
+    if( data.value <= 0 ) data.reject()
+  }
+  default : 1
 }
 
 negSchema = {
-	type : Number,
-	before : function( data ){
-		if( data.value >= 0 ) data.reject()
-	}
-	default : -1
+  type : Number,
+  before : function( data ){
+    if( data.value >= 0 ) data.reject()
+  }
+  default : -1
 }
 
 myFunc = Schemy.wrap([posSchema, negSchema], f, { ordered : false });
@@ -948,23 +950,23 @@ function f( str, num ){
 myFunc = Schemy.wrap([String,Number], f, { object : true });
 
 obj = {
-	str : 'hi',
-	num : 10
+  str : 'hi',
+  num : 10
 }
 
 myFunc(obj) //['hi',10]
 
 //Using more complex schemas:
 strSchema = {
-	type : String,
-	names : ['string'],
-	default : 'hi'
+  type : String,
+  names : ['string'],
+  default : 'hi'
 }
 
 numSchema = {
-	type : Number,
-	names : ['number'],
-	default : 10
+  type : Number,
+  names : ['number'],
+  default : 10
 }
 
 myFunc = Schemy.wrap([strSchema,numSchema], f, { object : true });
@@ -976,24 +978,24 @@ myFunc({num : 100})   //['hi',  100]
 myFunc({str : 100})   //['hi',  10 ]
 
 obj = {
-	str : 'bye',
-	num : 100
+  str : 'bye',
+  num : 100
 }
 
 myFunc(obj)            //['bye',100]
 
 //using the alternative names
 obj = {
-	string : 'bye',
-	number : 100
+  string : 'bye',
+  number : 100
 }
 
 myFunc(obj)            //['bye',100]
 
 //using the wrong names
 obj = {
-	strr : 'bye',
-	numm : 100
+  strr : 'bye',
+  numm : 100
 }
 
 myFunc(obj)            //['hi',  10 ]
@@ -1005,7 +1007,7 @@ Setting `array : true` will convert all arguments into an array before applying 
 
 ```javascript
 function f( arr ){
-	return arr;
+  return arr;
 }
 
 myFunc = Schemy.wrap([Array],f,{array:true})
@@ -1058,13 +1060,13 @@ A saved validation function input argument has one additional property:
 ```javascript
 
 function f( data ){
-	if( data.setting && data.value <= 0 ) data.reject('The value "' + data.value + '" is not greater than zero'); 
+  if( data.setting && data.value <= 0 ) data.reject('The value "' + data.value + '" is not greater than zero'); 
 }
 
 mySchema = {
-	type : Boolean,
-	default : false,
-	strict : true
+  type : Boolean,
+  default : false,
+  strict : true
 }
 
 Schemy.validation(Number,'greaterThanZero', f, mySchema);
@@ -1108,11 +1110,11 @@ These are the default settings:
   * `new` - **(Boolean)** - If the replacement value should be a new instance of the _type_
     * _Default:_ `false`
     * If `type` is an array, creates a new instance of the first Constructor in the array  
-	
+
   * `cast` - **(Boolean)** - If the replacement value should be the given value cast as the _type_
     * _Default:_ `true`
     * If `type` is an array, creates a new instance of the first Constructor in the array  
-	
+
   * `strict` - **(Boolean)** - To ignore values of `generate`, `new`, cast`, and `default` 
     * _Default:_ `false`
     * If there is no match it will either throw an error (if `required`) or set as `undefined`
@@ -1120,7 +1122,7 @@ These are the default settings:
   * `required` - **(Boolean)** - If the given value is required to match the given _schema_
     * _Default:_ `true`
     * It will not complete the function if there is no valid input
-	
+
   * `error` - **(Boolean)** - If an error should be thrown when a `required` value has not valid input
     * _Default:_ `true`
     * If false, it will simply not run the function
@@ -1133,10 +1135,10 @@ These are the default settings:
 
   * `ordered` - **(Boolean)** - If the arguments need to be given in the correct order
       * _Default:_ `true`
-	  * If false, it will automatically determine the order based on the _type_
+      * If false, it will automatically determine the order based on the _type_
   * `class` - **(Boolean)** - If `func` is a class or not
       * _Default:_ `false`
-	  * If true, it will always return a new `func`, regardless of if `new` is used or not
+      * If true, it will always return a new `func`, regardless of if `new` is used or not
   * `array` - **(Boolean)** - If the arguments should be combined into an array before applying a _schema_ and passing to `func`
       * _Default:_ `false`
   * `object` - **(Boolean)** - If the arguments get sent to `func`
@@ -1146,11 +1148,11 @@ These are the default settings:
 
   * `debug` - **(Function)** - The function to send the debug messages to
       * _Default:_ `console.log`
-	  * Setting this to anything other than function will prohibit the logging of any messages
-	  
+      * Setting this to anything other than function will prohibit the logging of any messages
+  
 ```javascript
 Schemy.settings({
-	strict : true
+  strict : true
 })
 
 Schemy.apply(1,String)    //undefined
@@ -1179,18 +1181,18 @@ A **Schema Object** can have any of the following properties:
   * `not`      - **(Array)**         - Array of the values that are **NOT** allowed
   
   * `default`  - **(Any)**           - The default replacement value
-	
+
   * `generate` - **(Function)**      - Function to create the replacement value
     * The input argument is the given `value`
-	
+
   * `new`      - **(Boolean)**       - If the replacement value should be a new instance of the _type_
     * _Default:_ `false`
     * If `type` is an array, creates a new instance of the first Constructor in the array  
-	
+
   * `cast`     - **(Boolean)**       - If the replacement value should be the given value cast as the _type_
     * _Default:_ `true`
     * If `type` is an array, creates a new instance of the first Constructor in the array  
-	
+
   * `strict`   - **(Boolean)**       - To ignore values of `generate`, `new`, cast`, and `default` 
     * _Default:_ `false`
     * If there is no match it will either throw an error (if `required`) or set as `undefined`
@@ -1198,7 +1200,7 @@ A **Schema Object** can have any of the following properties:
   * `required` - **(Boolean)**       - If the given value is required to match the given _schema_
     * _Default:_ `true`
     * It will not complete the function if there is no valid input
-	
+
   * `error`    - **(Boolean)**       - If an error should be thrown when a `required` value has not valid input
     * _Default:_ `true`
     * If false, it will simply not run the function
