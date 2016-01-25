@@ -1,7 +1,7 @@
 {
   "name": "schemy",
   "version": "0.0.1",
-  "description": "Automatically apply a schema to function arguments (and a lot more)",
+  "description": "Automatically function argument validation, extended JSON compatibility, type checking, and plenty more",
   "main": "index.js",
   "directories": {
     "test": "tests"
